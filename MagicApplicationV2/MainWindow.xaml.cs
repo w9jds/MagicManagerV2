@@ -22,29 +22,48 @@ namespace MagicApplicationV2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<CardListData> Cards = new List<CardListData>();
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {        
-            CardList();
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+           await GetCards();
         }
 
-        private void CardList()
+        private void CardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            CardWin ViewCard = new CardWin(Cards[CardsList.SelectedIndex]);
+            ViewCard.Show();
+        }
+
+        private async Task GetCards()
         {
             OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.DatabaseLocation);
-            DBCon.Open();
+            await DBCon.OpenAsync();
 
-            OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT MultiverseID, Name, Expansion FROM Cards", DBCon);
+            OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards", DBCon);
             DataSet CardDS = new DataSet();
             CardDA.Fill(CardDS);
-
-            List<CardListData> Cards = new List<CardListData>();
+            DBCon.Close();
 
             for (int i = 0; i < CardDS.Tables[0].Rows.Count; i++)
-                Cards.Add(new CardListData {MultiverseID = CardDS.Tables[0].Rows[i]["MultiverseID"].ToString(), CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(), CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString()});
+                Cards.Add(new CardListData
+                {
+                    MultiverseID = CardDS.Tables[0].Rows[i]["MultiverseID"].ToString(),
+                    CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(),
+                    CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString(),
+                    CardImg = CardDS.Tables[0].Rows[i]["ImgURL"].ToString(),
+                    Rarity = CardDS.Tables[0].Rows[i]["Rarity"].ToString(),
+                    ConvMana = CardDS.Tables[0].Rows[i]["ConvManaCost"].ToString(),
+                    Type = CardDS.Tables[0].Rows[i]["Type"].ToString(),
+                    Power = CardDS.Tables[0].Rows[i]["Power"].ToString(),
+                    Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString()
+                });
 
             CardsList.ItemsSource = Cards;
         }
