@@ -30,8 +30,7 @@ namespace MagicApplicationV2
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            
+        { 
            await GetCards();
         }
 
@@ -66,6 +65,12 @@ namespace MagicApplicationV2
                 });
 
             CardsList.ItemsSource = Cards;
+        }
+
+        private void CardsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CardTab.DataContext = Cards[CardsList.SelectedIndex];
+            CardImg.Source = new BitmapImage(new Uri(Cards[CardsList.SelectedIndex].CardImg.ToString(), UriKind.Absolute));
         }
     }
 }

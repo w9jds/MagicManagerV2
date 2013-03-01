@@ -19,7 +19,7 @@ namespace MagicApplicationV2
     /// </summary>
     public partial class CardWin : Window
     {
-        CardListData Card = new CardListData();
+        private CardListData Card = new CardListData();
 
         public CardWin(CardListData CardIn)
         {
@@ -30,7 +30,7 @@ namespace MagicApplicationV2
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CardImg.Source = new BitmapImage(new Uri(Card.CardImg.ToString(), UriKind.Absolute));
-            CardInfo.DataContext = Card;
+            CardWindow.DataContext = Card;
         }
     }
 }
