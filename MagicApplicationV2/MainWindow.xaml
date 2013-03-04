@@ -86,7 +86,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding CardName}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
                         <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Type}" VerticalAlignment="Center" FontSize="13" Margin="2" Foreground="White"/>
-                        <Image Grid.Row="2" Name="CardImg" Grid.Column="0" Height="310" Width="223" Margin="20,5,20,20"/>
+                        <Image Grid.Row="2" Name="CardImg" Grid.Column="0" Height="310" Width="223" Margin="20,5,20,5"/>
                         <TextBlock Grid.Row="3" Text="{Binding CardExpansion}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Foreground="White"/>
                         <TextBlock Grid.Row="4"  Text="{Binding Rarity}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
                         <TextBlock Grid.Row="5" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
