@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MagicApplicationV2.Controls;
+using MagicApplicationV2.Windows;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -71,6 +73,15 @@ namespace MagicApplicationV2
         {
             CardTab.DataContext = Cards[CardsList.SelectedIndex];
             CardImg.Source = new BitmapImage(new Uri(Cards[CardsList.SelectedIndex].CardImg.ToString(), UriKind.Absolute));
+        }
+
+        private void Settings_Clicked(object sender, RoutedEventArgs e)
+        {
+            PopupWin SettingsWin = new PopupWin();
+            Settings SettingsControl = new Settings();
+
+            SettingsWin.ControlGrid.Children.Add(SettingsControl);
+            SettingsWin.Show();
         }
     }
 }

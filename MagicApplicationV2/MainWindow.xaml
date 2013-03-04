@@ -26,7 +26,7 @@
                         </StackPanel>
                     </ItemsPanelTemplate>
                 </MenuItem.ItemsPanel>
-                <MenuItem Header="Settings" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" AlternationCount="6" />
+                <MenuItem Header="Settings" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" AlternationCount="6" Click="Settings_Clicked" />
             </MenuItem>
         </Menu>
         <Grid Grid.Column="1" Grid.Row="1" Margin="10">
@@ -34,7 +34,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ListBox Name="CardsList" Margin="10,0" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" MouseDoubleClick="CardsList_MouseDoubleClick" SelectionChanged="CardsList_SelectionChanged">
+            <ListBox Name="CardsList" Margin="10,0" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" ListBoxItem.MouseDoubleClick="CardsList_MouseDoubleClick" SelectionChanged="CardsList_SelectionChanged" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid >
@@ -73,20 +73,55 @@
         </Grid>
         <TabControl HorizontalAlignment="Stretch" Margin="10" Grid.Row="1" VerticalAlignment="Stretch">
             <TabItem Header="Card" Name="CardTab">
-                <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" ScrollViewer.CanContentScroll="True">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding CardName}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
-                    <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Type}" VerticalAlignment="Center" FontSize="13" Margin="2" Foreground="White"/>
-                    <Image Grid.Row="2" Name="CardImg" Grid.Column="0" Height="310" Width="223" Margin="20,5,20,20"/>
-                </Grid>
-                
+                <ScrollViewer>
+                    <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" ScrollViewer.CanContentScroll="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding CardName}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
+                        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Type}" VerticalAlignment="Center" FontSize="13" Margin="2" Foreground="White"/>
+                        <Image Grid.Row="2" Name="CardImg" Grid.Column="0" Height="310" Width="223" Margin="20,5,20,20"/>
+                        <TextBlock Grid.Row="3" Text="{Binding CardExpansion}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Foreground="White"/>
+                        <TextBlock Grid.Row="4"  Text="{Binding Rarity}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
+                        <TextBlock Grid.Row="5" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2.5" Foreground="White"/>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Search">
-                <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                <ScrollViewer>
+                    <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="Name:" Foreground="White" FontSize="13" Margin="0,2,0,0"/>
+                        <Grid Grid.Row="1" Margin="0,0,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0"/>
+                            <TextBox Width="223" Grid.Column="1" FontSize="13" Margin="0,0,4,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Expansion: " Foreground="White" FontSize="13"/>
+                        <Grid Grid.Row="3" Margin="0,0,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0"/>
+                            <TextBox Width="223" Grid.Column="1" FontSize="13" Margin="0,0,4,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="MagicApplicationV2.Controls.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Width="500" Height="350">
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Name="SettingsGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Card Database: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="13" Margin="10,20,5,0"/>
+        <TextBox Text="{Binding Path=DatabaseLocation}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,0" Loaded="TextBox_Loaded"/>
+        <Button Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0"/>
+        
+        
+    </Grid>
+</UserControl>
