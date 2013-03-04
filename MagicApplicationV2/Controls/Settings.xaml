@@ -15,16 +15,16 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Card Database: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="13" Margin="10,20,5,10"/>
-        <TextBox Text="{Binding Path=DatabaseLocation}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,10" Loaded="TextBox_Loaded"/>
-        <Button Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0" Margin="0,0,10,10"/>
+        <TextBox Name="CardDBPath" Text="{Binding Path=DatabaseLocation}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,10" Loaded="TextBox_Loaded"/>
+        <Button Name="CardDBFile" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0" Margin="0,0,10,10" Click="CardDBbtn_Click"/>
         
         <Grid Grid.Row="1" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="Save" Margin="10" HorizontalAlignment="Center" Padding="10,0,10,0"/>
-            <Button Content="Cancel" Grid.Column="1" Margin="10" HorizontalAlignment="Center" Padding="10,0,10,0"/>
+            <Button Content="Save" Margin="10" HorizontalAlignment="Center" Padding="10,0,10,0" Click="Save_Click" />
+            <Button Content="Cancel" Grid.Column="1" Margin="10" HorizontalAlignment="Center" Padding="10,0,10,0" Click="Cancel_Click" />
         </Grid>
     </Grid>
 </UserControl>

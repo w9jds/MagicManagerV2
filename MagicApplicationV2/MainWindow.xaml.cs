@@ -44,29 +44,40 @@ namespace MagicApplicationV2
 
         private async Task GetCards()
         {
-            OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.DatabaseLocation);
-            await DBCon.OpenAsync();
+            try
+            {
+                OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.DatabaseLocation);
+                await DBCon.OpenAsync();
 
-            OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards", DBCon);
-            DataSet CardDS = new DataSet();
-            CardDA.Fill(CardDS);
-            DBCon.Close();
+                OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards", DBCon);
+                DataSet CardDS = new DataSet();
+                CardDA.Fill(CardDS);
+                DBCon.Close();
 
-            for (int i = 0; i < CardDS.Tables[0].Rows.Count; i++)
-                Cards.Add(new CardListData
-                {
-                    MultiverseID = CardDS.Tables[0].Rows[i]["MultiverseID"].ToString(),
-                    CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(),
-                    CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString(),
-                    CardImg = CardDS.Tables[0].Rows[i]["ImgURL"].ToString(),
-                    Rarity = CardDS.Tables[0].Rows[i]["Rarity"].ToString(),
-                    ConvMana = CardDS.Tables[0].Rows[i]["ConvManaCost"].ToString(),
-                    Type = CardDS.Tables[0].Rows[i]["Type"].ToString(),
-                    Power = CardDS.Tables[0].Rows[i]["Power"].ToString(),
-                    Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString()
-                });
+                for (int i = 0; i < CardDS.Tables[0].Rows.Count; i++)
+                    Cards.Add(new CardListData
+                    {
+                        MultiverseID = CardDS.Tables[0].Rows[i]["MultiverseID"].ToString(),
+                        CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(),
+                        CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString(),
+                        CardImg = CardDS.Tables[0].Rows[i]["ImgURL"].ToString(),
+                        Rarity = CardDS.Tables[0].Rows[i]["Rarity"].ToString(),
+                        ConvMana = CardDS.Tables[0].Rows[i]["ConvManaCost"].ToString(),
+                        Type = CardDS.Tables[0].Rows[i]["Type"].ToString(),
+                        Power = CardDS.Tables[0].Rows[i]["Power"].ToString(),
+                        Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString()
+                    });
 
-            CardsList.ItemsSource = Cards;
+                CardsList.ItemsSource = Cards;
+            }
+            catch (Exception) {
+                PopupWin ErrorWin = new PopupWin();
+                Error ErrorControl = new Error(ErrorWin);
+                ErrorWin.ControlGrid.Children.Add(ErrorControl);
+                ErrorControl.ErrorText.Text = "There was a problem connection to the cards database. Please go to File > Settings and make sure the path is correct.";
+                ErrorWin.Show();
+                ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
+            };
         }
 
         private void CardsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -78,10 +89,26 @@ namespace MagicApplicationV2
         private void Settings_Clicked(object sender, RoutedEventArgs e)
         {
             PopupWin SettingsWin = new PopupWin();
-            Settings SettingsControl = new Settings();
+            Settings SettingsControl = new Settings(SettingsWin);
 
             SettingsWin.ControlGrid.Children.Add(SettingsControl);
             SettingsWin.Show();
+
+            SettingsControl.CloseWindow += new Settings.SettingsWinDelegate(CloseWindow);
+            SettingsControl.SaveCloseWindow += new Settings.SettingsWinDelegate(UpdateCloseWindow);
+        }
+
+        private void CloseWindow(object parent)
+        {
+            PopupWin ParentWin = parent as PopupWin;
+            ParentWin.Close();
+        }
+
+        private async void UpdateCloseWindow(object parent)
+        {
+            PopupWin SettingsWin = parent as PopupWin;
+            SettingsWin.Close();
+            await GetCards();
         }
     }
 }
