@@ -31,8 +31,8 @@
                 -->
                 <TextBlock Grid.Row="5" HorizontalAlignment="Center" Text="{Binding CardExpansion}" VerticalAlignment="Center" FontSize="13" Margin="2" Foreground="White"/>
                 <TextBlock Grid.Row="6" HorizontalAlignment="Center" Text="{Binding Rarity}" VerticalAlignment="Center" FontSize="13" Margin="2" Foreground="White"/>
-                <Button Grid.Row="7" HorizontalAlignment="Left" Content="Legality" FontSize="13" Margin="10"/>
-                <Button Grid.Row="7" HorizontalAlignment="Right" Content="Cost" FontSize="13" Margin="10"/>
+                <Button Grid.Row="7" HorizontalAlignment="Left" Padding="5,0,5,0" Content="Legality" FontSize="13" Margin="10"/>
+                <Button Grid.Row="7" HorizontalAlignment="Right" Padding="5,0,5,0" Content="Cost" FontSize="13" Margin="10"/>
             </Grid>
         </Grid>
     </Grid>
