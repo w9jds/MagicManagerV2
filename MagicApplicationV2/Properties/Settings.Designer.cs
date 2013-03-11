@@ -34,5 +34,17 @@ namespace MagicApplicationV2.Properties {
                 this["DatabaseLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OwnedDatabase {
+            get {
+                return ((string)(this["OwnedDatabase"]));
+            }
+            set {
+                this["OwnedDatabase"] = value;
+            }
+        }
     }
 }

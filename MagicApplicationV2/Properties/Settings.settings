@@ -5,5 +5,8 @@
     <Setting Name="DatabaseLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Jeremy\Desktop\Gatherer.mmcdb</Value>
     </Setting>
+    <Setting Name="OwnedDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

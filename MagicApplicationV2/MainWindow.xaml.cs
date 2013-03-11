@@ -34,7 +34,11 @@ namespace MagicApplicationV2
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         { 
-           GetCards();
+            GetCards();
+            if (Properties.Settings.Default.OwnedDatabase == "" || System.IO.File.Exists(Properties.Settings.Default.OwnedDatabase) == false)
+            {
+
+            }
         }
 
         private void CardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -131,19 +135,35 @@ namespace MagicApplicationV2
             else
                 Filter.Add("%");
 
+            if (CardTypeCheck.IsChecked == true && CardTypeBox.Text != "")
+                Filter.Add("%" + CardTypeBox.Text + "%");
+            else
+                Filter.Add("%");
+
+            /*
+            if (CardPowerCheck.IsChecked == true && CardTypeBox.Text != "")
+                Filter.Add(CardPowerBox.Text);
+            else
+                Filter.Add("%");
+
+            if (CardToughnessCheck.IsChecked == true && CardToughnessBox.Text != "")
+                Filter.Add(CardToughnessBox.Text);
+            else
+                Filter.Add("%");
+             */
 
             try
             {
                 OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.DatabaseLocation);
                 await DBCon.OpenAsync();
                 
-                OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards WHERE Name LIKE '" + Filter[0] + "' and Expansion LIKE '" + Filter[1] + "'", DBCon);
+                OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards WHERE Name LIKE '" + Filter[0] + "' and Expansion LIKE '" + Filter[1] + "' and Type LIKE '"
+                    + Filter[2] + "'", DBCon);
                 DataSet CardDS = new DataSet();
                 CardDA.Fill(CardDS);
                 DBCon.Close();
 
                 Cards.Clear();
-
                 for (int i = 0; i < CardDS.Tables[0].Rows.Count; i++)
                         Cards.Add(new CardListData
                         {
@@ -166,8 +186,7 @@ namespace MagicApplicationV2
                 ErrorWin.Show();
                 ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
             };
-
-
         }
+
     }
 }
