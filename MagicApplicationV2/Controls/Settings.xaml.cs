@@ -23,7 +23,7 @@ namespace MagicApplicationV2.Controls
     {
         public delegate void SettingsWinDelegate(object parent);
         public SettingsWinDelegate CloseWindow;
-        public SettingsWinDelegate SaveCloseWindow;
+        //public SettingsWinDelegate SaveCloseWindow; Not needed with new event handler
 
         private PopupWin Popup = new PopupWin();
 
@@ -52,11 +52,24 @@ namespace MagicApplicationV2.Controls
 
             // Get the selected file name and display in a TextBox
             if (result == true)
-            {
-                // Open document
-                string filename = OFD.FileName;
-                CardDBPath.Text = filename;
-            }
+                CardDBPath.Text = OFD.FileName;
+        }
+
+        private void CardODBbtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Create OpenFileDialog
+            Microsoft.Win32.OpenFileDialog OFD = new Microsoft.Win32.OpenFileDialog();
+
+            // Set filter for file extension and default file extension
+            OFD.DefaultExt = ".mmodb";
+            OFD.Filter = "Magic Manager Owned Database |*.mmodb";
+
+            // Display OpenFileDialog by calling ShowDialog method
+            Nullable<bool> result = OFD.ShowDialog();
+
+            // Get the selected file name and display in a TextBox
+            if (result == true)
+                OCDBPath.Text = OFD.FileName;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -65,13 +78,22 @@ namespace MagicApplicationV2.Controls
             {
                 Properties.Settings.Default.DatabaseLocation = CardDBPath.Text;
                 Properties.Settings.Default.Save();
-                SaveCloseWindow(Popup);
             }
+            if (OCDBPath.Text != Properties.Settings.Default.OwnedDatabase)
+            {
+                Properties.Settings.Default.OwnedDatabase = OCDBPath.Text;
+                Properties.Settings.Default.Save();
+            }
+            CloseWindow(Popup);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow(Popup);
         }
+
+
+
+
     }
 }

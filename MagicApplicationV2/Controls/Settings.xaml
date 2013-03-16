@@ -9,16 +9,25 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="Card Database: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="13" Margin="10,20,5,10"/>
-        <TextBox Name="CardDBPath" Text="{Binding Path=DatabaseLocation}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,10" Loaded="TextBox_Loaded"/>
-        <Button Name="CardDBFile" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0" Margin="0,0,10,10" Click="CardDBbtn_Click"/>
-        
-        <Grid Grid.Row="1" Grid.ColumnSpan="3">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Card Database: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="13" Margin="10,20,5,10"/>
+            <TextBox Name="CardDBPath" Text="{Binding Path=DatabaseLocation}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,10" Loaded="TextBox_Loaded"/>
+            <Button Name="CardDBFile" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0" Margin="0,0,10,10" Click="CardDBbtn_Click"/>
+
+            <TextBlock Text="Owned Card Database: " Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="13" Margin="10,20,5,10"/>
+            <TextBox Name="OCDBPath" Grid.Row="1" Text="{Binding Path=OwnedDatabase}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="330" Margin="0,0,10,10"/>
+            <Button Name="OCDBFile" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="..." Padding="5,0,5,0" Margin="0,0,10,10" Click="CardODBbtn_Click"/>
+        </Grid>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

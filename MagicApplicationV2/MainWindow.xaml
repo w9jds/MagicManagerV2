@@ -142,7 +142,7 @@
                             <CheckBox Name="CardTypeCheck" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0"/>
                             <TextBox Name="CardTypeBox" Width="223" Grid.Column="1" FontSize="13" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
-                    <!--<TextBlock Grid.Row="6" Text="Converted Mana Cost: " FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <!--<TextBlock Grid.Row="6" Text="Converted Mana Cost: " FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <Grid Grid.Row="7" Margin="0,0,0,2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -152,8 +152,8 @@
                             </Grid.ColumnDefinitions>
                             <CheckBox Name="CardConvManaCheck" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0"/>
                             <TextBox Name="CardConvManaBox" Grid.Column="2" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        </Grid>
-                        <Grid Grid.Row="6" Margin="0,0,0,2">
+                        </Grid>-->
+                        <!--<Grid Grid.Row="6" Margin="0,0,0,2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -168,7 +168,7 @@
                             <TextBlock Grid.Column="3" Text="Toughness: " Foreground="White" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <CheckBox Name="CardToughnessCheck" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0"/>
                             <TextBox Name="CardToughnessBox" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40"/>
-                        </Grid>-->
+                        </Grid-->
                     </Grid>
                 </ScrollViewer>
             </TabItem>

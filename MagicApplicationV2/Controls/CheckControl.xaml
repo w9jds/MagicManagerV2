@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="MagicApplicationV2.Controls.CheckControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" >
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Name="PopupText" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" FontSize="13" Margin="15" Foreground="White"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Yes" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="Yes_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White"/>
+            <Button Grid.Column="1" Content="No" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="No_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White"/>
+        </Grid>
+    </Grid>
+</UserControl>
