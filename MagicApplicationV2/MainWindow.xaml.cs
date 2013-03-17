@@ -74,7 +74,6 @@ namespace MagicApplicationV2
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         { 
             GetCards();
-            GetOwnedCards();
 
             if (Properties.Settings.Default.OwnedDatabase == "" || System.IO.File.Exists(Properties.Settings.Default.OwnedDatabase) == false)
             {
@@ -84,6 +83,8 @@ namespace MagicApplicationV2
                 NewODB.ControlGrid.Children.Add(NewODBText);
                 NewODB.ShowDialog();
             }
+            else
+                GetOwnedCards();
         }
 
         /// <summary>

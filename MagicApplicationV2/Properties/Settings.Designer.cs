@@ -25,7 +25,7 @@ namespace MagicApplicationV2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Jeremy\\Desktop\\Gatherer.mmcdb")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DatabaseLocation {
             get {
                 return ((string)(this["DatabaseLocation"]));

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="DatabaseLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\Jeremy\Desktop\Gatherer.mmcdb</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="OwnedDatabase" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
