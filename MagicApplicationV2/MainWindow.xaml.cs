@@ -83,18 +83,23 @@ namespace MagicApplicationV2
                 NewODBText.PopupText.Text = "There is currently no database selected containing a list of your owned cards. \nWould you like to create a new one?";
                 NewODB.ControlGrid.Children.Add(NewODBText);
                 NewODB.ShowDialog();
-                //NewODBText.CloseWin += new CheckControl.CheckControlDelegate(CloseWindow);
             }
         }
 
         /// <summary>
         /// Calls the AddCard function to run async (Doesn't wait)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             AddCard(CardsList.SelectedIndex);
+        }
+
+        /// <summary>
+        /// Calls the RemoveCard function to run async (Doesn't wait)
+        /// </summary>
+        private async void RemoveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveCard(MyCardsList.SelectedIndex);
         }
 
         /// <summary>
@@ -115,43 +120,58 @@ namespace MagicApplicationV2
                     break;
                 }
             }
-
+            
+            OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
+            
             if (Duplicate != true)
             {
-                MyCards.Add(new OwnedCardListData
-                {
-                    MultiverseID = Cards[Index].MultiverseID,
-                    CardName = Cards[Index].CardName,
-                    CardExpansion = Cards[Index].CardExpansion,
-                    CardImg = Cards[Index].CardImg,
-                    Rarity = Cards[Index].Rarity,
-                    ConvMana = Cards[Index].ConvMana,
-                    Type = Cards[Index].Type,
-                    Power = Cards[Index].Power,
-                    Toughness = Cards[Index].Toughness,
-                    OwnedAmount = 1
-                });
-
-                OleDbConnection DBcon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
-                DBcon.Open();
-                OleDbCommand DBcmd = new OleDbCommand();
-                DBcmd.Connection = DBcon;
-                DBcmd.CommandText = "INSERT INTO MyCards([MultiverseID], [OwnedAmount]) VALUES ('" + MyCards[MyCards.Count - 1].MultiverseID + "','" + MyCards[MyCards.Count - 1].OwnedAmount + "')";
-
+                OleDbCommand DBcmd = new OleDbCommand("INSERT INTO MyCards([MultiverseID], [OwnedAmount]) VALUES ('" + Cards[Index].MultiverseID + "', '1')", DBCon);
+                DBCon.Open();
                 DBcmd.ExecuteNonQuery();
-                DBcon.Close();
+                DBCon.Close();
             }
             else
             {
                 MyCards[DuplicateIndex].OwnedAmount += 1;
-                this.MyCardsList.ItemsSource = MyCards;
 
-                OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
-                OleDbCommand cmd = new OleDbCommand("Update MyCards set OwnedAmount = '" + MyCards[DuplicateIndex].OwnedAmount.ToString() + "' where MultiverseID = '" + MyCards[DuplicateIndex].MultiverseID + "'", DBCon);
+                OleDbCommand cmd = new OleDbCommand("Update MyCards set OwnedAmount = '" + MyCards[DuplicateIndex].OwnedAmount + "' where MultiverseID = '" + MyCards[DuplicateIndex].MultiverseID + "'", DBCon);
                 DBCon.Open();
                 cmd.ExecuteNonQuery();
                 DBCon.Close();
             }
+            MyCards.Clear();
+            GetOwnedCards();
+        }
+
+        /// <summary>
+        /// This function removes one card from the selected index at a time. Unless it is one then it remove it from the DB
+        /// </summary>
+        private async Task RemoveCard(int Index)
+        {
+            OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
+
+            if (MyCards[Index].OwnedAmount != 1)
+            {
+                MyCards[Index].OwnedAmount -= 1;
+                OleDbCommand DBCmd = new OleDbCommand("UPDATE MyCards Set OwnedAmount = '" + MyCards[Index].OwnedAmount + "' where MultiverseID = '" + MyCards[Index].MultiverseID + "'", DBCon);
+                await DBCon.OpenAsync();
+                DBCmd.ExecuteNonQuery();
+                DBCon.Close();
+            }
+            else
+            {
+                OleDbCommand DBCmd = new OleDbCommand("Delete From MyCards Where MultiverseID = '" + MyCards[Index].MultiverseID + "'", DBCon);
+                await DBCon.OpenAsync();
+                DBCmd.ExecuteNonQuery();
+                DBCon.Close();
+            }
+            MyCards.Clear();
+            await GetOwnedCards();
+            try
+            {
+                this.MyCardsList.SelectedIndex = Index;
+            }
+            catch (Exception) { }
         }
 
         /// <summary>
@@ -200,7 +220,6 @@ namespace MagicApplicationV2
                 ErrorWin.ControlGrid.Children.Add(ErrorControl);
                 ErrorControl.ErrorText.Text = "There was a problem connection to the cards database. Please go to File > Settings and make sure the path is correct.";
                 ErrorWin.ShowDialog();
-                //ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
             };
         }
 
@@ -233,14 +252,14 @@ namespace MagicApplicationV2
                     MyCards.Add(new OwnedCardListData
                     {
                         MultiverseID = MyCardDS.Tables[0].Rows[i]["MultiverseID"].ToString(),
-                        CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(),
-                        CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString(),
-                        CardImg = CardDS.Tables[0].Rows[i]["ImgURL"].ToString(),
-                        Rarity = CardDS.Tables[0].Rows[i]["Rarity"].ToString(),
-                        ConvMana = CardDS.Tables[0].Rows[i]["ConvManaCost"].ToString(),
-                        Type = CardDS.Tables[0].Rows[i]["Type"].ToString(),
-                        Power = CardDS.Tables[0].Rows[i]["Power"].ToString(),
-                        Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString(),
+                        CardName = CardDS.Tables[0].Rows[0]["Name"].ToString(),
+                        CardExpansion = CardDS.Tables[0].Rows[0]["Expansion"].ToString(),
+                        CardImg = CardDS.Tables[0].Rows[0]["ImgURL"].ToString(),
+                        Rarity = CardDS.Tables[0].Rows[0]["Rarity"].ToString(),
+                        ConvMana = CardDS.Tables[0].Rows[0]["ConvManaCost"].ToString(),
+                        Type = CardDS.Tables[0].Rows[0]["Type"].ToString(),
+                        Power = CardDS.Tables[0].Rows[0]["Power"].ToString(),
+                        Toughness = CardDS.Tables[0].Rows[0]["Toughness"].ToString(),
                         OwnedAmount = Convert.ToInt32(MyCardDS.Tables[0].Rows[i]["OwnedAmount"].ToString())
                         //WishOwnedAmount = MyCardDS.Tables[0].Rows[i]["WishOwnedAmount"],
                         //FoilOwnedAmount = (MyCardDS.Tables[0].Rows[i]["FoilOwnedAmount"]
@@ -254,7 +273,6 @@ namespace MagicApplicationV2
                 ErrorWin.ControlGrid.Children.Add(ErrorControl);
                 ErrorControl.ErrorText.Text = "There was a problem connection to owned cards database. \nPlease go to File > Settings and make sure the path is correct.";
                 ErrorWin.ShowDialog();
-                //ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
             };
         }
 
@@ -278,9 +296,6 @@ namespace MagicApplicationV2
 
             SettingsWin.ControlGrid.Children.Add(SettingsControl);
             SettingsWin.ShowDialog();
-
-            //SettingsControl.CloseWindow += new Settings.SettingsWinDelegate(CloseWindow);
-            //SettingsControl.SaveCloseWindow += new Settings.SettingsWinDelegate(UpdateCloseWindow); Not Needed with new event handler
         }
 
         /// <summary>

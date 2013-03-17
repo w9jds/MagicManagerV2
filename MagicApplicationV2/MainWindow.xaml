@@ -63,7 +63,7 @@
             <ListBox Name="MyCardsList" Grid.Column="2" Margin="10,0" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Height="155">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
@@ -71,7 +71,7 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock  Grid.Column="0" Name="AmountOwned" Text="{Binding OwnedAmount}" FontSize="15" Margin="0,0,2.5,0" Foreground="White" />
+                            <TextBlock  Grid.Column="0" Name="AmountOwned" Text="{Binding OwnedAmount, Mode=OneWay}" FontSize="15" Margin="0,0,2.5,0" Foreground="White" />
                             <TextBlock Grid.Column="1" Text="X " FontSize="15" Margin="2.5,0,0,0" Foreground="White"/>
                             <TextBlock Grid.Column="2" Name="CardExpansion" Text="{Binding CardName, Mode=OneWay}" FontSize ="15" Foreground="White"/>
                             <!--<Image Grid.Column="0" Height="155" Width="111.5" Name="CardImage"/>
@@ -81,16 +81,31 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Name="AddBtn" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5,0,5,5" Padding="6,0,6,0" FontSize="15" Foreground="White" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="Black" Click="AddBtn_Click">
+                    <Button.ContentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Text="+" FontSize="15" Padding="0,0,0,2" FontWeight="Bold"/>
+                            </Grid>
+                        </DataTemplate>
+                    </Button.ContentTemplate>
+                </Button>
 
-            <Button Name="AddBtn" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0" Padding="6,0,6,0" FontSize="15" Foreground="White" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="Black" Click="AddBtn_Click">
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Text="+" FontSize="15" Padding="0,0,0,2" FontWeight="Bold"/>
-                        </Grid>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
+                <Button Name="RemoveBtn" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Margin="5,5,5,0" Padding="8,0,8,0" FontSize="15" Foreground="White" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="Black" Click="RemoveBtn_Click">
+                    <Button.ContentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Text="-" FontSize="15" Padding="0,0,0,2" FontWeight="Bold"/>
+                            </Grid>
+                        </DataTemplate>
+                    </Button.ContentTemplate>
+                </Button>
+            </Grid>
         </Grid>
         <TabControl HorizontalAlignment="Stretch" Margin="10" Grid.Row="1" VerticalAlignment="Stretch">
             <TabItem Header="Card" Name="CardTab">
