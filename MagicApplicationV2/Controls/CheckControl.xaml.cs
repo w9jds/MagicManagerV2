@@ -22,9 +22,6 @@ namespace MagicApplicationV2.Controls
     /// </summary>
     public partial class CheckControl : UserControl
     {
-        public delegate void CheckControlDelegate(object parent);
-        public CheckControlDelegate CloseWin;
-
         private PopupWin Parent;
 
         public CheckControl(Window parent)
@@ -33,12 +30,21 @@ namespace MagicApplicationV2.Controls
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Run the create new Database function Async so it doesn't lock up the UI (Doesn't wait) then closes window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Yes_Click(object sender, RoutedEventArgs e)
         {
             CreateNewODB();
-            CloseWin(Parent);
+            Parent.Close();
         }
 
+        /// <summary>
+        /// Creates a Database in the My Documents folder of your computer for the current user. (Based on Windows 8 / Windows 7)
+        /// </summary>
+        /// <returns></returns>
         private async Task CreateNewODB()
         {
             string DocLocation = System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\Magic Manager\\";
@@ -51,32 +57,40 @@ namespace MagicApplicationV2.Controls
             ADOX.Catalog CreateDB = new ADOX.Catalog();
             CreateDB.Create("Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + DocLocation + "; Jet OLEDB:Engine Type=5");
 
-            ADOX.Table CardTable = new ADOX.Table();
-            CardTable.Name = "MyCards";
-            CardTable.Columns.Append("MultiverseID");
-            CardTable.Columns.Append("Name");
-            CardTable.Columns.Append("Expansion");
-            CardTable.Columns.Append("stdAmount");
-            CardTable.Columns.Append("foilAmount");
-            CreateDB.Tables.Append(CardTable);
+            try
+            {
+                ADOX.Table CardTable = new ADOX.Table();
+                CardTable.Name = "MyCards";
+                CardTable.Columns.Append("MultiverseID");
+                CardTable.Columns.Append("OwnedAmount", ADOX.DataTypeEnum.adInteger);
+                CardTable.Columns["OwnedAmount"].Attributes = ADOX.ColumnAttributesEnum.adColNullable;
+                CardTable.Columns.Append("WishOwnedAmount", ADOX.DataTypeEnum.adInteger);
+                CardTable.Columns["WishOwnedAmount"].Attributes = ADOX.ColumnAttributesEnum.adColNullable;
+                CardTable.Columns.Append("FoilOwnedAmount", ADOX.DataTypeEnum.adInteger);
+                CardTable.Columns["FoilOwnedAmount"].Attributes = ADOX.ColumnAttributesEnum.adColNullable;
 
-            //OleDbConnection DBcon = CreateDB.ActiveConnection as OleDbConnection;
-            //if (DBcon != null)
-            //    DBcon.Close();
+                CreateDB.Tables.Append(CardTable);
 
-            //Marshal.ReleaseComObject(CreateDB.ActiveConnection);
-            //Marshal.ReleaseComObject(CreateDB);
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
 
-            Properties.Settings.Default.OwnedDatabase = DocLocation;
-            Properties.Settings.Default.Save();
+                //OleDbConnection DBcon = CreateDB.ActiveConnection as OleDbConnection;
+                //if (DBcon != null)
+                //    DBcon.Close();
+
+                //Marshal.ReleaseComObject(CreateDB.ActiveConnection);
+                //Marshal.ReleaseComObject(CreateDB);
+                //GC.Collect();
+                //GC.WaitForPendingFinalizers();
+
+                Properties.Settings.Default.OwnedDatabase = DocLocation;
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception) { }
 
         }
 
         private void No_Click(object sender, RoutedEventArgs e)
         {
-            CloseWin(this.Parent);
+            Parent.Close();
         }
     }
 }

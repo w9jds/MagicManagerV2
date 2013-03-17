@@ -64,6 +64,7 @@
     <Compile Include="Controls\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\OwnedCardListData.cs" />
     <Compile Include="Windows\PopupWin.xaml.cs">
       <DependentUpon>PopupWin.xaml</DependentUpon>
     </Compile>
@@ -91,7 +92,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CardListData.cs" />
+    <Compile Include="Classes\CardListData.cs" />
     <Compile Include="Windows\CardWin.xaml.cs">
       <DependentUpon>CardWin.xaml</DependentUpon>
     </Compile>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MagicApplicationV2.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ namespace MagicApplicationV2
         {
             Card = CardIn;
             InitializeComponent();
+            this.Topmost = true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

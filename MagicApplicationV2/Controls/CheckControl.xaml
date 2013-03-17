@@ -15,8 +15,8 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Yes" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="Yes_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White"/>
-            <Button Grid.Column="1" Content="No" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="No_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White"/>
+            <Button Grid.Column="0" Content="Yes" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="Yes_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White" BorderBrush="Black"/>
+            <Button Grid.Column="1" Content="No" HorizontalAlignment="Center" FontSize="13" VerticalAlignment="Center" Padding="10,1,10,1" Click="No_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="White" BorderBrush="Black"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MagicApplicationV2
+namespace MagicApplicationV2.Classes
 {
     public class CardListData
     {

@@ -21,10 +21,9 @@ namespace MagicApplicationV2.Controls
     /// </summary>
     public partial class Settings : UserControl
     {
-        public delegate void SettingsWinDelegate(object parent);
-        public SettingsWinDelegate CloseWindow;
+        //public delegate void SettingsWinDelegate(object parent);
+        //public SettingsWinDelegate CloseWindow;
         //public SettingsWinDelegate SaveCloseWindow; Not needed with new event handler
-
         private PopupWin Popup = new PopupWin();
 
         public Settings(Window PopupWinIn)
@@ -38,6 +37,9 @@ namespace MagicApplicationV2.Controls
             SettingsGrid.DataContext = Properties.Settings.Default;
         }
 
+        /// <summary>
+        /// Opens a file dialog box for you to selec the .mmcdb file containing all the cards.
+        /// </summary>
         private void CardDBbtn_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog
@@ -55,6 +57,9 @@ namespace MagicApplicationV2.Controls
                 CardDBPath.Text = OFD.FileName;
         }
 
+        /// <summary>
+        /// Opens a file dialog box for you to select the .mmodb file containing your cards.
+        /// </summary>
         private void CardODBbtn_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog
@@ -72,6 +77,10 @@ namespace MagicApplicationV2.Controls
                 OCDBPath.Text = OFD.FileName;
         }
 
+        /// <summary>
+        /// When the save button is clicked this function saves the information from the textboxes
+        /// into the settings (if they are different) and closes the window.
+        /// </summary>
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (CardDBPath.Text != Properties.Settings.Default.DatabaseLocation)
@@ -84,16 +93,15 @@ namespace MagicApplicationV2.Controls
                 Properties.Settings.Default.OwnedDatabase = OCDBPath.Text;
                 Properties.Settings.Default.Save();
             }
-            CloseWindow(Popup);
+            Popup.Close();
         }
 
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            CloseWindow(Popup);
+            Popup.Close();
         }
-
-
-
-
     }
 }

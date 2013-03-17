@@ -1,4 +1,5 @@
-﻿using MagicApplicationV2.Controls;
+﻿using MagicApplicationV2.Classes;
+using MagicApplicationV2.Controls;
 using MagicApplicationV2.Windows;
 using System;
 using System.Collections.Generic;
@@ -28,46 +29,52 @@ namespace MagicApplicationV2
     public partial class MainWindow : Window
     {
         private ObservableCollection<CardListData> Cards = new ObservableCollection<CardListData>();
+        private ObservableCollection<OwnedCardListData> MyCards = new ObservableCollection<OwnedCardListData>();
 
         public MainWindow()
         {
             InitializeComponent();
-            Cards.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(UpdateCardsListView_Event);
-            Properties.Settings.Default.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(UpdateEverything_Event);
+            
+            Cards.CollectionChanged += new NotifyCollectionChangedEventHandler(UpdateCardsListView_Event);
+            MyCards.CollectionChanged += new NotifyCollectionChangedEventHandler(UpdateMyCardsListView_Event);
+            Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler(UpdateEverything_Event);
         }
 
+        /// <summary>
+        /// When one of the settings is changed it calls here. This updates the ListViews for the setting that threw this event.
+        /// </summary>
         private async void UpdateEverything_Event(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "OwnedDatabase")
-            {
-
-
-            }
+                GetOwnedCards();
             if (e.PropertyName == "DatabaseLocation")
                 GetCards();
-
         }
 
         /// <summary>
         /// When the Cards List is changed it updates the Cards ListView
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void UpdateCardsListView_Event(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //this.CardsList.Items.Clear();
             this.CardsList.ItemsSource = Cards;
+        }
+
+        /// <summary>
+        /// When the MyCards List is changed it updates the MyCards ListView
+        /// </summary>
+        private void UpdateMyCardsListView_Event(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.MyCardsList.ItemsSource = MyCards;
         }
 
         /// <summary>
         /// When the window is loaded it check to see if you have a Owned Database path and if not asks if you want to set one up. 
         /// Also Gets all the cards from the database and adds to the Cards list.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         { 
             GetCards();
+            GetOwnedCards();
 
             if (Properties.Settings.Default.OwnedDatabase == "" || System.IO.File.Exists(Properties.Settings.Default.OwnedDatabase) == false)
             {
@@ -75,16 +82,81 @@ namespace MagicApplicationV2
                 CheckControl NewODBText = new CheckControl(NewODB);
                 NewODBText.PopupText.Text = "There is currently no database selected containing a list of your owned cards. \nWould you like to create a new one?";
                 NewODB.ControlGrid.Children.Add(NewODBText);
-                NewODB.Show();
-                NewODBText.CloseWin += new CheckControl.CheckControlDelegate(CloseWindow);
+                NewODB.ShowDialog();
+                //NewODBText.CloseWin += new CheckControl.CheckControlDelegate(CloseWindow);
+            }
+        }
+
+        /// <summary>
+        /// Calls the AddCard function to run async (Doesn't wait)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            AddCard(CardsList.SelectedIndex);
+        }
+
+        /// <summary>
+        /// Adds the currently selected card in the CardsListView to the MyCards Database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task AddCard(int Index)
+        {
+            bool Duplicate = false;
+            int DuplicateIndex = 0;
+
+            for (int i = 0; i < MyCards.Count; i++)
+            {
+                if (MyCards[i].MultiverseID.Equals(Cards[Index].MultiverseID.ToString()) == true)
+                {
+                    DuplicateIndex = i;
+                    Duplicate = true;
+                    break;
+                }
+            }
+
+            if (Duplicate != true)
+            {
+                MyCards.Add(new OwnedCardListData
+                {
+                    MultiverseID = Cards[Index].MultiverseID,
+                    CardName = Cards[Index].CardName,
+                    CardExpansion = Cards[Index].CardExpansion,
+                    CardImg = Cards[Index].CardImg,
+                    Rarity = Cards[Index].Rarity,
+                    ConvMana = Cards[Index].ConvMana,
+                    Type = Cards[Index].Type,
+                    Power = Cards[Index].Power,
+                    Toughness = Cards[Index].Toughness,
+                    OwnedAmount = 1
+                });
+
+                OleDbConnection DBcon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
+                DBcon.Open();
+                OleDbCommand DBcmd = new OleDbCommand();
+                DBcmd.Connection = DBcon;
+                DBcmd.CommandText = "INSERT INTO MyCards([MultiverseID], [OwnedAmount]) VALUES ('" + MyCards[MyCards.Count - 1].MultiverseID + "','" + MyCards[MyCards.Count - 1].OwnedAmount + "')";
+
+                DBcmd.ExecuteNonQuery();
+                DBcon.Close();
+            }
+            else
+            {
+                MyCards[DuplicateIndex].OwnedAmount += 1;
+                this.MyCardsList.ItemsSource = MyCards;
+
+                OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
+                OleDbCommand cmd = new OleDbCommand("Update MyCards set OwnedAmount = '" + MyCards[DuplicateIndex].OwnedAmount.ToString() + "' where MultiverseID = '" + MyCards[DuplicateIndex].MultiverseID + "'", DBCon);
+                DBCon.Open();
+                cmd.ExecuteNonQuery();
+                DBCon.Close();
             }
         }
 
         /// <summary>
         /// When a card is double clicked this displays a window with the cards info and picture.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void CardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             CardWin ViewCard = new CardWin(Cards[CardsList.SelectedIndex]);
@@ -127,11 +199,68 @@ namespace MagicApplicationV2
                 Error ErrorControl = new Error(ErrorWin);
                 ErrorWin.ControlGrid.Children.Add(ErrorControl);
                 ErrorControl.ErrorText.Text = "There was a problem connection to the cards database. Please go to File > Settings and make sure the path is correct.";
-                ErrorWin.Show();
-                ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
+                ErrorWin.ShowDialog();
+                //ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
             };
         }
 
+        /// <summary>
+        /// This calls out to the Database with all of the owned cards and stores all of them in the mycards list.
+        /// </summary>
+        /// <returns></returns>
+        private async Task GetOwnedCards()
+        {
+            try
+            {
+                OleDbConnection DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.OwnedDatabase);
+                await DBCon.OpenAsync();
+
+                OleDbDataAdapter MyCardDA = new OleDbDataAdapter("SELECT * FROM MyCards", DBCon);
+                DataSet MyCardDS = new DataSet();
+                MyCardDA.Fill(MyCardDS);
+                DBCon.Close();
+
+                for (int i = 0; i < MyCardDS.Tables[0].Rows.Count; i++)
+                {
+                    DBCon = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + Properties.Settings.Default.DatabaseLocation);
+                    await DBCon.OpenAsync();
+
+                    OleDbDataAdapter CardDA = new OleDbDataAdapter("SELECT * FROM Cards Where MultiverseID = '" + MyCardDS.Tables[0].Rows[i]["MultiverseID"].ToString() + "'", DBCon);
+                    DataSet CardDS = new DataSet();
+                    CardDA.Fill(CardDS);
+                    DBCon.Close();
+
+                    MyCards.Add(new OwnedCardListData
+                    {
+                        MultiverseID = MyCardDS.Tables[0].Rows[i]["MultiverseID"].ToString(),
+                        CardName = CardDS.Tables[0].Rows[i]["Name"].ToString(),
+                        CardExpansion = CardDS.Tables[0].Rows[i]["Expansion"].ToString(),
+                        CardImg = CardDS.Tables[0].Rows[i]["ImgURL"].ToString(),
+                        Rarity = CardDS.Tables[0].Rows[i]["Rarity"].ToString(),
+                        ConvMana = CardDS.Tables[0].Rows[i]["ConvManaCost"].ToString(),
+                        Type = CardDS.Tables[0].Rows[i]["Type"].ToString(),
+                        Power = CardDS.Tables[0].Rows[i]["Power"].ToString(),
+                        Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString(),
+                        OwnedAmount = Convert.ToInt32(MyCardDS.Tables[0].Rows[i]["OwnedAmount"].ToString())
+                        //WishOwnedAmount = MyCardDS.Tables[0].Rows[i]["WishOwnedAmount"],
+                        //FoilOwnedAmount = (MyCardDS.Tables[0].Rows[i]["FoilOwnedAmount"]
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                PopupWin ErrorWin = new PopupWin();
+                Error ErrorControl = new Error(ErrorWin);
+                ErrorWin.ControlGrid.Children.Add(ErrorControl);
+                ErrorControl.ErrorText.Text = "There was a problem connection to owned cards database. \nPlease go to File > Settings and make sure the path is correct.";
+                ErrorWin.ShowDialog();
+                //ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
+            };
+        }
+
+        /// <summary>
+        /// This updates the binding to the image on the quick view on the side of the ListViews
+        /// </summary>
         private void CardsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CardTab.DataContext = Cards[CardsList.SelectedIndex];
@@ -142,24 +271,21 @@ namespace MagicApplicationV2
         /// Brings up the settings window when the settings option in the menu is selected.
         /// Also creates event handlers for the close of zed window.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Settings_Clicked(object sender, RoutedEventArgs e)
         {
             PopupWin SettingsWin = new PopupWin();
             Settings SettingsControl = new Settings(SettingsWin);
 
             SettingsWin.ControlGrid.Children.Add(SettingsControl);
-            SettingsWin.Show();
+            SettingsWin.ShowDialog();
 
-            SettingsControl.CloseWindow += new Settings.SettingsWinDelegate(CloseWindow);
+            //SettingsControl.CloseWindow += new Settings.SettingsWinDelegate(CloseWindow);
             //SettingsControl.SaveCloseWindow += new Settings.SettingsWinDelegate(UpdateCloseWindow); Not Needed with new event handler
         }
 
         /// <summary>
         /// Closes the Popup window that is passed in.
         /// </summary>
-        /// <param name="parent"></param>
         private void CloseWindow(object parent)
         {
             PopupWin ParentWin = parent as PopupWin;
@@ -167,22 +293,8 @@ namespace MagicApplicationV2
         }
 
         /// <summary>
-        /// Closes the Popup window that is passed in when the settings are changed.
-        /// Also updates the Cards list.
-        /// </summary>
-        /// <param name="parent"></param>
-        //private async void UpdateCloseWindow(object parent) Not needed with new event handler
-        //{
-        //    PopupWin SettingsWin = parent as PopupWin;
-        //    SettingsWin.Close();
-        //    GetCards();
-        //}
-
-        /// <summary>
         /// Starts the filter statement asyncronusly (Doesn't wait for it to finish)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void Search_Click(object sender, RoutedEventArgs e)
         {
             FilterDB();
@@ -192,7 +304,6 @@ namespace MagicApplicationV2
         /// Based on the info in the search boxes this creates a query statement that filter the database. 
         /// The return is then stored in the Cards list and updated to cards view.
         /// </summary>
-        /// <returns></returns>
         private async Task FilterDB()
         {
             List<string> Filter = new List<string>();
@@ -211,16 +322,6 @@ namespace MagicApplicationV2
                 Filter.Add("%" + CardTypeBox.Text + "%");
             else
                 Filter.Add("%");
-
-            //if (CardPowerCheck.IsChecked == true && CardTypeBox.Text != "")
-            //    Filter.Add("Power = '" + CardPowerBox.Text + "'");
-            //else
-            //    Filter.Add("");
-
-            //if (CardToughnessCheck.IsChecked == true && CardToughnessBox.Text != "")
-            //    Filter.Add("Toughness = '" + CardToughnessBox.Text + "'");
-            //else
-            //    Filter.Add("");
 
             try
             {
@@ -249,14 +350,7 @@ namespace MagicApplicationV2
                             Toughness = CardDS.Tables[0].Rows[i]["Toughness"].ToString()
                         });
             }
-            catch (Exception) {
-                //PopupWin ErrorWin = new PopupWin();
-                //Error ErrorControl = new Error(ErrorWin);
-                //ErrorWin.ControlGrid.Children.Add(ErrorControl);
-                //ErrorControl.ErrorText.Text = "There was a problem connection to the cards database. Please go to File > Settings and make sure the path is correct.";
-                //ErrorWin.Show();
-                //ErrorControl.CloseWin += new Error.ErrorControlDelegate(CloseWindow);
-            };
+            catch (Exception) { };
         }
     }
 }

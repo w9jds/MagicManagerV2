@@ -21,9 +21,6 @@ namespace MagicApplicationV2.Controls
     /// </summary>
     public partial class Error : UserControl
     {
-        public delegate void ErrorControlDelegate(object parent);
-        public ErrorControlDelegate CloseWin;
-
         private PopupWin Popup = new PopupWin();
 
         public Error(Window Parent)
@@ -34,7 +31,7 @@ namespace MagicApplicationV2.Controls
 
         private void Okay_Click(object sender, RoutedEventArgs e)
         {
-            CloseWin(Popup);
+            Popup.Close();
         }
     }
 }
