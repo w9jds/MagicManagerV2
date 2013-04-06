@@ -1,12 +1,5 @@
-﻿using MagicApplicationV2.Pages;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Data.OleDb;
-using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,19 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MagicApplicationV2
+namespace MagicApplicationV2.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DeckManager.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DeckManager : Page
     {
-        public MainWindow()
+        public DeckManager()
         {
             InitializeComponent();
-
-            OwnedManager Page1 = new OwnedManager();
-            MainFrame.Navigate(Page1);
         }
     }
 }
